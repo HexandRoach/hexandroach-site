@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Nimvex is a lightweight Qt-based Linux browser designed for gaming, streaming, and simple everyday browsing.">
+  <title>Nimvex — HexandRoach</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #090a15;
+      --surface: #121428;
+      --text: #f8f8ff;
+      --muted: #aeb1ca;
+      --cyan: #37ead9;
+      --violet: #c062ff;
+      --line: rgba(194, 179, 255, .18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 48px 24px;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(70, 165, 255, .38), transparent 30rem),
+        radial-gradient(circle at 85% 85%, rgba(196, 62, 255, .40), transparent 32rem),
+        linear-gradient(135deg, #10225f, #32216f 50%, #54239b);
+    }
+    main {
+      width: min(880px, 100%);
+      margin: auto;
+      padding: 40px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: 0 30px 80px rgba(4, 2, 30, .5);
+    }
+    img { width: 96px; height: auto; border-radius: 18px; }
+    h1 { margin: 18px 0 8px; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -.04em; }
+    p { color: var(--muted); line-height: 1.65; }
+    .meta { margin: 24px 0; padding: 18px; border: 1px solid var(--line); border-radius: 18px; }
+    .meta div { display: flex; justify-content: space-between; gap: 16px; padding: 6px 0; }
+    .meta dt { color: var(--muted); }
+    .meta dd { margin: 0; font-weight: 700; }
+    a.button {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      color: #04121a;
+      font-weight: 800;
+      text-decoration: none;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+    }
+    a.back { color: var(--cyan); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back" href="/">← All projects</a>
+    <img src="mobile/nimvex.png" alt="Nimvex logo">
+    <h1>Nimvex</h1>
+    <p>A lightweight Qt-based browser for Linux, designed for gaming, streaming, and straightforward everyday browsing.</p>
+    <dl class="meta">
+      <div><dt>Latest release</dt><dd id="nimvex-version">0.1.0-4</dd></div>
+      <div><dt>Platform</dt><dd>Fedora Linux</dd></div>
+      <div><dt>Default search</dt><dd>Google</dd></div>
+      <div><dt>Last website sync</dt><dd id="nimvex-updated">Loading…</dd></div>
+    </dl>
+    <a class="button" href="/projects/nimvex/mobile/">Open mobile page</a>
+    <p>The signed Fedora RPM repository and installation instructions will appear here after the repository publication step.</p>
+  </main>
+  <script>
+    fetch('/data/projects/nimvex.json')
+      .then((response) => response.json())
+      .then((data) => {
+        document.getElementById('nimvex-version').textContent = data.version;
+        document.getElementById('nimvex-updated').textContent = data.updated;
+      })
+      .catch(() => {
+        document.getElementById('nimvex-updated').textContent = 'Unavailable';
+      });
+  </script>
+</body>
+</html>
