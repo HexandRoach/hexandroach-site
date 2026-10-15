@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Community-tested Linux and Steam Deck game compatibility reports, Proton and Wine settings, launch options, anti-cheat notes, and practical fixes.">
+  <title>HexandRoach Compatibility Guide — Linux & Steam Deck Games</title>
+
+  <style>
+    :root {
+      --page-blue: #10225f;
+      --page-purple: #54239b;
+      --surface: #090a15;
+      --text: #f8f8ff;
+      --muted: #aeb1ca;
+      --violet: #c062ff;
+      --cyan: #37ead9;
+      --green: #68e3a1;
+      --amber: #ffc869;
+      --orange: #ff9d4d;
+      --red: #ff718b;
+      --gray: #9fa4bd;
+      --line: rgba(194, 179, 255, .18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      padding: 44px 24px;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 14% 8%, rgba(70, 165, 255, .44), transparent 29rem),
+        radial-gradient(circle at 87% 85%, rgba(196, 62, 255, .46), transparent 34rem),
+        linear-gradient(135deg, var(--page-blue), #32216f 50%, var(--page-purple));
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    .site-shell {
+      width: min(1290px, 100%);
+      min-height: calc(100vh - 88px);
+      margin: 0 auto;
+      overflow: hidden;
+      border: 1px solid rgba(220, 213, 255, .16);
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: 0 35px 85px rgba(4, 2, 30, .52), 0 0 44px rgba(110, 73, 255, .16);
+    }
+
+    .topbar {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 0 42px;
+      background: linear-gradient(90deg, rgba(18, 20, 43, .98), rgba(23, 17, 45, .96));
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.08rem;
+      font-weight: 850;
+      letter-spacing: -.045em;
+      white-space: nowrap;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      display: block;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(88, 236, 215, .35));
+    }
+
+    .brand span {
+      color: #cfbdff;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      margin-left: auto;
+    }
+
+    nav a,
+    nav button {
+      padding: 0;
+      border: 0;
+      color: var(--muted);
+      background: transparent;
+      font: inherit;
+      font-size: .88rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color .18s ease;
+    }
+
+    nav a:hover,
+    nav a.active,
+    nav button:hover {
+      color: white;
+    }
+
+    nav button:disabled {
+      color: #777b95;
+      cursor: not-allowed;
+    }
+
+    nav button:disabled:hover {
+      color: #777b95;
+    }
+
+    .community-button {
+      padding: 11px 18px;
+      border: 1px solid rgba(210, 195, 255, .25);
+      border-radius: 11px;
+      color: white;
+      background: rgba(139, 69, 255, .15);
+      text-decoration: none;
+      font-size: .86rem;
+      font-weight: 750;
+      transition: .2s ease;
+    }
+
+    .community-button:hover {
+      transform: translateY(-2px);
+      background: rgba(139, 69, 255, .30);
+    }
+
+    .hero {
+  position: relative;
+  isolation: isolate;
+  min-height: calc(100vh - 170px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 78px 32px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 72%, rgba(112, 60, 245, .40), transparent 33%),
+    radial-gradient(ellipse at 50% 100%, rgba(31, 128, 207, .24), transparent 45%),
+    linear-gradient(180deg, #090a16 0%, #0a0b18 62%, #0f1021 100%);
+}
+
+    .hero::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  bottom: -195px;
+  left: 50%;
+  width: 800px;
+  height: 490px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse,
+    rgba(159, 74, 255, .54),
+    rgba(75, 114, 255, .20) 40%,
+    transparent 70%
+  );
+  filter: blur(4px);
+  animation: breathe 5.5s ease-in-out infinite;
+}
+
+    .hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: .20;
+  background-image: radial-gradient(rgba(218, 207, 255, .48) .55px, transparent .55px);
+  background-size: 18px 18px;
+  mask-image: linear-gradient(to bottom, transparent 5%, black 30%, transparent 83%);
+}
+
+    .orbit {
+      position: absolute;
+      z-index: -1;
+      width: 470px;
+      height: 470px;
+      border: 1px solid rgba(193, 158, 255, .10);
+      border-radius: 50%;
+      box-shadow: inset 0 0 55px rgba(125, 73, 255, .06);
+      animation: spin 24s linear infinite;
+    }
+
+    .orbit::before,
+    .orbit::after {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .orbit::before {
+      top: 42px;
+      left: 52px;
+      background: var(--cyan);
+      box-shadow: 0 0 18px 5px rgba(55, 234, 217, .42);
+    }
+
+    .orbit::after {
+      right: 57px;
+      bottom: 59px;
+      background: var(--violet);
+      box-shadow: 0 0 18px 5px rgba(192, 98, 255, .42);
+    }
+
+    .hero-content {
+      width: min(810px, 100%);
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: #dccfff;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 15px var(--green);
+    }
+
+    h1 {
+      margin: 0 auto;
+      font-size: clamp(2.65rem, 5.3vw, 5.3rem);
+      line-height: .97;
+      letter-spacing: -.07em;
+    }
+
+    h1 em {
+      color: var(--violet);
+      font-style: normal;
+      text-shadow: 0 0 31px rgba(183, 81, 255, .48);
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: 24px auto 32px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 49px;
+      padding: 0 23px;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      color: white;
+      background: transparent;
+      font: inherit;
+      font-size: .9rem;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .button.primary {
+      background: linear-gradient(105deg, #7638e9, #a947ff);
+      box-shadow: 0 14px 30px rgba(132, 54, 255, .31);
+    }
+
+    .button.primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 42px rgba(151, 59, 255, .48);
+    }
+
+    .button.secondary {
+      border-color: rgba(214, 204, 255, .22);
+      background: rgba(255, 255, 255, .055);
+    }
+
+    .button.secondary:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, .11);
+    }
+
+    .button:disabled {
+      border-color: rgba(214, 204, 255, .12);
+      color: #7e829b;
+      background: rgba(255, 255, 255, .03);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .button:disabled:hover {
+      transform: none;
+      background: rgba(255, 255, 255, .03);
+      box-shadow: none;
+    }
+
+    .quick-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+      padding: 10px 14px;
+      border: 1px solid rgba(192, 177, 255, .15);
+      border-radius: 99px;
+      color: #c7cadf;
+      background: rgba(11, 12, 28, .55);
+      font-size: .77rem;
+    }
+
+    .quick-status strong {
+      color: #efeaff;
+    }
+
+    .pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 0 rgba(104, 227, 161, .65);
+      animation: pulse 1.9s infinite;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 19px 38px;
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      color: #7d819c;
+      background: #080911;
+      font-size: .77rem;
+    }
+
+    footer a {
+      color: #c3a8ff;
+      text-decoration: none;
+    }
+
+    .modal {
+      position: fixed;
+      z-index: 50;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(3, 4, 14, .78);
+      backdrop-filter: blur(8px);
+      transition: opacity .22s ease;
+    }
+
+    .modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-panel {
+      width: min(1080px, 100%);
+      max-height: min(780px, calc(100vh - 44px));
+      overflow: auto;
+      padding: 27px;
+      border: 1px solid rgba(203, 186, 255, .20);
+      border-radius: 20px;
+      background: linear-gradient(145deg, #17182d, #0d0e1b 72%);
+      box-shadow: 0 28px 85px rgba(0, 0, 0, .52), 0 0 48px rgba(120, 64, 255, .15);
+      transform: translateY(15px) scale(.985);
+      transition: transform .22s ease;
+    }
+
+    .modal.show .modal-panel {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 23px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2.15rem);
+      letter-spacing: -.05em;
+    }
+
+    .modal-header p {
+      max-width: 690px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: .9rem;
+    }
+
+    .close-button {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(210, 195, 255, .18);
+      border-radius: 10px;
+      color: #ece8ff;
+      background: rgba(255, 255, 255, .05);
+      font-size: 1.45rem;
+      cursor: pointer;
+    }
+
+    .alphabet-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 20px;
+    }
+
+    .alphabet-button {
+      min-width: 36px;
+      min-height: 36px;
+      padding: 0 10px;
+      border: 1px solid rgba(195, 181, 255, .17);
+      border-radius: 9px;
+      color: #d8d4ef;
+      background: rgba(255, 255, 255, .05);
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 850;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .alphabet-button:hover,
+    .alphabet-button.active {
+      border-color: rgba(196, 144, 255, .65);
+      color: white;
+      background: rgba(132, 63, 240, .42);
+    }
+
+    .alphabet-button.empty {
+      opacity: .34;
+      cursor: not-allowed;
+    }
+
+    .alphabet-button.empty:hover {
+      border-color: rgba(195, 181, 255, .17);
+      color: #d8d4ef;
+      background: rgba(255, 255, 255, .05);
+    }
+.library-sections {
+  display: grid;
+  gap: 28px;
+}
+
+.library-section {
+  display: grid;
+  gap: 13px;
+}
+
+.library-section[hidden] {
+  display: none;
+}
+
+.library-section-title {
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(195, 181, 255, .16);
+  color: #f0eaff;
+  font-size: 1.3rem;
+  letter-spacing: -.03em;
+}
+    .library-summary {
+      margin: 0 0 17px;
+      color: #b7bad0;
+      font-size: .82rem;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .game-card {
+      min-height: 238px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 18px;
+      border: 1px solid rgba(195, 181, 255, .16);
+      border-radius: 16px;
+      background: linear-gradient(145deg, #2b274d, #111325);
+    }
+
+    .game-card h3 {
+      margin: 11px 0 6px;
+      font-size: 1.24rem;
+    }
+
+    .game-card p {
+      margin: 0;
+      color: #c5c7db;
+      font-size: .79rem;
+      line-height: 1.45;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      align-self: start;
+      gap: 6px;
+      padding: 6px 9px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 99px;
+      background: rgba(10, 11, 22, .75);
+      font-size: .7rem;
+      font-weight: 800;
+    }
+
+    .badge .dot {
+      width: 6px;
+      height: 6px;
+      margin: 0;
+      border-radius: 50%;
+      background: var(--amber);
+    }
+
+    .badge.green .dot {
+      background: var(--green);
+    }
+
+    .badge.orange .dot {
+      background: var(--orange);
+    }
+
+    .badge.red .dot {
+      background: var(--red);
+    }
+
+    .badge.gray .dot {
+      background: var(--gray);
+    }
+
+    .game-info {
+      display: grid;
+      gap: 7px;
+      margin-top: 15px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      color: #c8b4ff;
+      font-size: .74rem;
+    }
+
+    .game-info div {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .game-info span:first-child {
+      color: #8e93ae;
+    }
+
+    .game-info strong {
+      color: #ecedff;
+      font-weight: 750;
+      text-align: right;
+    }
+
+    .working-yes {
+      color: #a8f5c7 !important;
+    }
+
+    .working-no {
+      color: #ffabb8 !important;
+    }
+
+    .status-legend {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .legend-card {
+      padding: 14px;
+      border: 1px solid rgba(195, 181, 255, .14);
+      border-radius: 13px;
+      background: rgba(8, 9, 22, .48);
+    }
+
+    .legend-card h3 {
+      margin: 10px 0 6px;
+      font-size: .92rem;
+    }
+
+    .legend-card p {
+      margin: 0;
+      color: #b8bbd0;
+      font-size: .76rem;
+      line-height: 1.45;
+    }
+
+    @keyframes breathe {
+      50% {
+        transform: translateX(-50%) scale(1.09);
+        opacity: .86;
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes pulse {
+      70% {
+        box-shadow: 0 0 0 8px rgba(104, 227, 161, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(104, 227, 161, 0);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .status-legend {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 860px) {
+      body {
+        padding: 16px;
+      }
+
+      .site-shell {
+        min-height: calc(100vh - 32px);
+        border-radius: 21px;
+      }
+
+      .topbar {
+        min-height: 72px;
+        padding: 15px 22px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .community-button {
+        margin-left: auto;
+        padding: 10px 13px;
+      }
+
+      .hero {
+        min-height: calc(100vh - 142px);
+        padding: 75px 24px;
+      }
+
+      footer {
+        padding: 17px 22px;
+      }
+
+      .game-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 580px) {
+      .brand {
+        font-size: .92rem;
+      }
+
+      .brand-logo {
+        width: 32px;
+        height: 32px;
+      }
+
+      .community-button {
+        font-size: .76rem;
+      }
+
+      .hero p {
+        font-size: .91rem;
+      }
+
+      .actions {
+        display: grid;
+        width: min(310px, 100%);
+        margin: 0 auto;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .modal {
+        padding: 10px;
+      }
+
+      .modal-panel {
+        padding: 20px 16px;
+        border-radius: 16px;
+      }
+
+      .game-grid,
+      .status-legend {
+        grid-template-columns: 1fr;
+      }
+
+      .alphabet-nav {
+        gap: 6px;
+      }
+
+      .alphabet-button {
+        min-width: 32px;
+      }
+    }
+    /* Add Game Listing form fields */
+#submit-modal input,
+#submit-modal select,
+#submit-modal textarea {
+  color: #ffffff;
+  background: #2b2d3a;
+  border: 1px solid #5a5e70;
+  caret-color: #ffffff;
+}
+
+#submit-modal input::placeholder,
+#submit-modal textarea::placeholder {
+  color: #b7bac8;
+  opacity: 1;
+}
+
+#submit-modal select {
+  color: #ffffff;
+}
+
+#submit-modal select:invalid {
+  color: #b7bac8;
+}
+
+#submit-modal option {
+  color: #ffffff;
+  background: #2b2d3a;
+}
+
+#submit-modal input:focus,
+#submit-modal select:focus,
+#submit-modal textarea:focus {
+  color: #ffffff;
+  border-color: #a979ff;
+  background: #343747;
+  box-shadow: 0 0 0 3px rgba(169, 121, 255, 0.18);
+  outline: none;
+}
+  </style>
+
+<style id="penguin-clipper-card-style">
+  #apps-catalog .penguin-clipper-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 280px;
+    padding: 28px;
+    border: 1px solid rgba(94, 234, 212, 0.28);
+    background: #071b25;
+    color: #f1fafc;
+  }
+
+  #apps-catalog .penguin-clipper-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(7, 18, 28, 0.97) 0%,
+        rgba(7, 18, 28, 0.84) 48%,
+        rgba(7, 18, 28, 0.15) 100%
+      ),
+      url("assets/penguin-clipper-card.svg") center / cover no-repeat;
+  }
+
+  #apps-catalog .penguin-clipper-card h3 {
+    max-width: 65%;
+    color: #ffffff;
+  }
+
+  #apps-catalog .penguin-clipper-card p {
+    max-width: 65%;
+    color: #d7e8ed;
+    line-height: 1.65;
+  }
+
+  #apps-catalog .penguin-clipper-card .actions {
+    position: relative;
+    margin-top: 24px;
+  }
+
+  @media (max-width: 520px) {
+    #apps-catalog .penguin-clipper-card {
+      padding: 22px;
+    }
+
+    #apps-catalog .penguin-clipper-card::before {
+      background:
+        linear-gradient(
+          90deg,
+          rgba(7, 18, 28, 0.97),
+          rgba(7, 18, 28, 0.78)
+        ),
+        url("assets/penguin-clipper-card.svg") center / cover no-repeat;
+    }
+
+    #apps-catalog .penguin-clipper-card h3,
+    #apps-catalog .penguin-clipper-card p {
+      max-width: 100%;
+    }
+  }
+</style>
+
+
+<style id="rhex-fish-card-style">
+  #apps-catalog #rhex-app-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 280px;
+    padding: 28px;
+    background: #061525;
+    border: 1px solid rgba(103, 232, 249, 0.3);
+    color: #f0fbff;
+  }
+
+  #apps-catalog #rhex-app-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        rgba(6, 21, 37, 0.58),
+        rgba(6, 21, 37, 0.82)
+      ),
+      url("assets/rhex-fish-card.svg") center / cover no-repeat;
+  }
+
+  #apps-catalog #rhex-app-card h3 {
+    color: #ffffff;
+  }
+
+  #apps-catalog #rhex-app-card p {
+    color: #e0f2fe;
+    line-height: 1.65;
+  }
+
+  #apps-catalog #rhex-app-card .actions {
+    margin-top: 24px;
+  }
+</style>
+
+</head>
+
+<body>
+  <main class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="HexandRoach Compatibility Guide home">
+        <img class="brand-logo" src="images/hexandroach-logo.png" alt="HexandRoach logo">
+        HEXANDROACH <span>GUIDE</span>
+      </a>
+
+      <nav>
+        <a class="active" href="#home">Home</a>
+        <button type="button" data-open="status-modal">Status guide</button>
+        <button type="button" data-open="submit-modal">Add Game Listing</button>
+      </nav>
+
+      <a class="community-button" href="https://discord.gg/YqCkT4qRxC" target="_blank" rel="noopener noreferrer">
+        Join Our Community ↗
+      </a>
+    </header>
+
+    <section class="hero" id="home">
+      <div class="orbit"></div>
+
+      <div class="hero-content">
+        <div class="eyebrow">Community-tested compatibility reports</div>
+
+        <h1>
+          Game compatibility<br>
+          <em>for Linux.</em><br>
+          Clear answers. Real fixes.
+        </h1>
+
+        <p>
+          Find community-tested reports for Linux and Steam Deck games, including
+          Proton and Wine versions, launch options, anti-cheat notes, performance
+          tips, and practical setup fixes.
+        </p>
+
+        <div class="actions">
+          <button class="button primary" type="button" data-open="library-modal">
+  Browse game reports →
+</button>
+
+          <button class="button secondary" type="button" data-open="apps-modal">
+            Browse apps →
+          </button>
+        </div>
+
+        <div class="quick-status">
+          <span class="pulse"></span>
+          <span><strong>Community guide in progress.</strong> New reports and verified fixes are being added.</span>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 HexandRoach · <a href="LICENSE">MIT Licensed</a></span>
+      <span>Reports can change after game, Proton, driver, launcher, or anti-cheat updates.</span>
+    </footer>
+  </main>
+
+       <div class="modal" id="library-modal" aria-hidden="true">
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="library-title">
+      <header class="modal-header">
+        <div>
+          <h2 id="library-title">Game report library</h2>
+          <p>
+            Choose a letter to view titles alphabetically. Each report shows the
+            latest compatibility status, store or launcher, and whether the game
+            is currently working in our most recent test.
+          </p>
+        </div>
+
+        <button class="close-button" type="button" data-close aria-label="Close game library">×</button>
+      </header>
+
+     <div class="alphabet-nav" aria-label="Browse library alphabetically">
+  <button class="alphabet-button active" type="button" data-letter="all">All</button>
+  <button class="alphabet-button" type="button" data-letter="A">A</button>
+  <button class="alphabet-button" type="button" data-letter="B">B</button>
+  <button class="alphabet-button" type="button" data-letter="C">C</button>
+  <button class="alphabet-button" type="button" data-letter="D">D</button>
+  <button class="alphabet-button" type="button" data-letter="E">E</button>
+  <button class="alphabet-button" type="button" data-letter="F">F</button>
+  <button class="alphabet-button" type="button" data-letter="G">G</button>
+  <button class="alphabet-button" type="button" data-letter="H">H</button>
+  <button class="alphabet-button" type="button" data-letter="I">I</button>
+  <button class="alphabet-button" type="button" data-letter="J">J</button>
+  <button class="alphabet-button" type="button" data-letter="K">K</button>
+  <button class="alphabet-button" type="button" data-letter="L">L</button>
+  <button class="alphabet-button" type="button" data-letter="M">M</button>
+  <button class="alphabet-button" type="button" data-letter="N">N</button>
+  <button class="alphabet-button" type="button" data-letter="O">O</button>
+  <button class="alphabet-button" type="button" data-letter="P">P</button>
+  <button class="alphabet-button" type="button" data-letter="Q">Q</button>
+  <button class="alphabet-button" type="button" data-letter="R">R</button>
+  <button class="alphabet-button" type="button" data-letter="S">S</button>
+  <button class="alphabet-button" type="button" data-letter="T">T</button>
+  <button class="alphabet-button" type="button" data-letter="U">U</button>
+  <button class="alphabet-button" type="button" data-letter="V">V</button>
+  <button class="alphabet-button" type="button" data-letter="W">W</button>
+  <button class="alphabet-button" type="button" data-letter="X">X</button>
+  <button class="alphabet-button" type="button" data-letter="Y">Y</button>
+  <button class="alphabet-button" type="button" data-letter="Z">Z</button>
+</div>
+
+      <p class="library-summary" id="library-summary">
+        Showing all currently verified reports.
+      </p>
+
+      <div class="library-sections" id="library-sections">
+        <section class="library-section" data-letter-section="C">
+          <h3 class="library-section-title">C</h3>
+
+          <div class="game-grid">
+            <article class="game-card">
+              <span class="badge green"><span class="dot"></span>Excellent</span>
+              <h3>Cyberpunk 2077</h3>
+              <p>Proton guide · controller notes · graphics settings</p>
+
+              <div class="game-info">
+                <div><span>Available on</span><strong>Steam / GOG</strong></div>
+                <div><span>Compatibility</span><strong>Proton</strong></div>
+                <div><span>Current status</span><strong class="working-yes">Working</strong></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="library-section" data-letter-section="G">
+          <h3 class="library-section-title">G</h3>
+
+          <div class="game-grid">
+            <article class="game-card">
+              <span class="badge"><span class="dot"></span>Playable</span>
+              <h3>Gray Zone Warfare</h3>
+              <p>Proton Experimental · anti-cheat notes · launch-option guide</p>
+
+              <div class="game-info">
+                <div><span>Available on</span><strong>Steam</strong></div>
+                <div><span>Compatibility</span><strong>Proton Experimental</strong></div>
+                <div><span>Current status</span><strong class="working-yes">Working with fixes</strong></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="library-section" data-letter-section="H">
+          <h3 class="library-section-title">H</h3>
+
+          <div class="game-grid">
+            <article class="game-card">
+              <span class="badge green"><span class="dot"></span>Excellent</span>
+              <h3>Helldivers 2</h3>
+              <p>Proton setup · multiplayer testing · performance notes</p>
+
+              <div class="game-info">
+                <div><span>Available on</span><strong>Steam</strong></div>
+                <div><span>Compatibility</span><strong>Proton</strong></div>
+                <div><span>Current status</span><strong class="working-yes">Working</strong></div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <div id="community-reports"></div>
+    </section>
+  </div>
+
+  <div class="modal" id="status-modal" aria-hidden="true">
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="status-title">
+      <header class="modal-header">
+        <div>
+          <h2 id="status-title">Compatibility status guide</h2>
+          <p>
+            Every game report uses one clear status based on the latest community
+            testing. Game patches, Proton versions, GPU drivers, launchers, and
+            anti-cheat updates can change a game’s status, so reports should be retested.
+          </p>
+        </div>
+
+        <button class="close-button" type="button" data-close aria-label="Close status guide">×</button>
+      </header>
+
+      <div class="status-legend">
+        <article class="legend-card">
+          <span class="badge green"><span class="dot"></span>Excellent</span>
+          <h3>Works out of the box</h3>
+          <p>Installs, launches, and plays reliably with little or no additional setup.</p>
+        </article>
+
+        <article class="legend-card">
+          <span class="badge"><span class="dot"></span>Playable</span>
+          <h3>Minor setup needed</h3>
+          <p>Works after a small change such as selecting Proton or adding launch options.</p>
+        </article>
+
+        <article class="legend-card">
+          <span class="badge orange"><span class="dot"></span>Limited</span>
+          <h3>Major caveats</h3>
+          <p>Runs, but important features like multiplayer, performance, or stability may suffer.</p>
+        </article>
+
+        <article class="legend-card">
+          <span class="badge red"><span class="dot"></span>Unsupported</span>
+          <h3>Not reliably playable</h3>
+          <p>Fails to launch, crashes, or has a blocker such as unsupported anti-cheat.</p>
+        </article>
+
+        <article class="legend-card">
+          <span class="badge gray"><span class="dot"></span>Untested</span>
+          <h3>Needs a report</h3>
+          <p>No current verified Linux or Steam Deck test is available yet.</p>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="apps-modal" aria-hidden="true">
+    <section class="modal-panel"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="apps-title">
+      <header class="modal-header">
+        <div>
+          <p class="eyebrow">HexandRoach apps</p>
+          <h2 id="apps-title">Browse apps</h2>
+          <p>Explore our apps and downloads for supported systems.</p>
+        </div>
+
+        <button class="close-button"
+                type="button"
+                data-close
+                aria-label="Close app catalog">×</button>
+      </header>
+
+      <div id="apps-catalog" class="game-grid">
+        <article class="game-card" id="rhex-app-card">
+          <h3>RHex</h3>
+          <p>Version 0.7.0-alpha.4 · AppImage · amd64</p>
+          <p>
+            Alpha release. Review the release notes before downloading.
+          </p>
+
+          <div class="actions">
+            <a class="button primary"
+               href="https://github.com/HexandRoach/rhex-releases/releases/download/v0.7.0-alpha.4/rhex_0.7.0-alpha.4_amd64.AppImage">
+              Download AppImage →
+            </a>
+            <a class="button secondary"
+               href="https://github.com/HexandRoach/rhex-releases/releases/tag/v0.7.0-alpha.4"
+               target="_blank"
+               rel="noopener noreferrer">
+              Release notes
+            </a>
+          </div>
+        </article>
+
+        <article class="game-card penguin-clipper-card">
+          <h3>Penguin Clipper</h3>
+          <p>Version 0.1.1 · RPM package · x86_64</p>
+          <p>
+            Visit the Penguin Clipper repository for project details,
+            installation information, and available downloads.
+          </p>
+
+          <div class="actions">
+            <a class="button primary"
+               href="https://github.com/HexandRoach/penguin-clipper/releases/download/v0.1.1/Penguin.Clipping-0.1.1-1.x86_64.rpm">
+              Download RPM →
+            </a>
+            <a class="button secondary"
+               href="https://github.com/HexandRoach/penguin-clipper"
+               target="_blank"
+               rel="noopener noreferrer">
+              View project
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="submit-modal" aria-hidden="true">
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="submit-title">
+      <header class="modal-header">
+        <div>
+          <p class="eyebrow">Community submissions</p>
+          <h2 id="submit-title">Add a game listing</h2>
+          <p>Share your Linux or Steam Deck compatibility results.</p>
+        </div>
+
+        <button class="close-button" type="button" data-close aria-label="Close add game listing">×</button>
+      </header>
+
+      <form id="test-form">
+       <div id="report-verification" style="margin: 16px 0;"></div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="game-name">Game title</label>
+            <input id="game-name" required placeholder="Example: Hades II">
+          </div>
+
+          <div class="field">
+            <label for="store">Store or launcher</label>
+            <select id="store" required>
+              <option value="" selected disabled>Choose one</option>
+              <option>Steam</option>
+              <option>Epic Games Store</option>
+              <option>GOG</option>
+              <option>Battle.net</option>
+              <option>EA App</option>
+              <option>Ubisoft Connect</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="distro">Distribution or device</label>
+            <input id="distro" placeholder="Example: Fedora 44 / Steam Deck OLED">
+          </div>
+
+          <div class="field">
+            <label for="proton">Proton or Wine version</label>
+            <input id="proton" placeholder="Example: Proton Experimental">
+          </div>
+
+          <div class="field">
+            <label for="status">Compatibility status</label>
+            <select id="status" required>
+              <option value="" selected disabled>Choose one</option>
+              <option>Excellent</option>
+              <option>Playable</option>
+              <option>Limited</option>
+              <option>Unsupported</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="tested-date">Date tested</label>
+            <input id="tested-date" type="date">
+          </div>
+
+          <div class="field full">
+            <label for="launch-options">Launch options</label>
+            <input id="launch-options" placeholder="Example: PROTON_ENABLE_WAYLAND=0 %command%">
+          </div>
+
+          <div class="field full">
+            <label for="notes">Notes, fixes, and known issues</label>
+            <textarea id="notes" placeholder="Explain the setup, what works, and remaining problems."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="button secondary" type="button" data-close>Cancel</button>
+          <button class="button primary" type="submit">Submit test result</button>
+        </div>
+
+        <div class="success-message" id="success-message" role="status"></div>
+      </form>
+    </section>
+  </div>
+
+  
+
+
+  <script>
+  const REPORTS_API =
+  "https://hexandroach-api.hexandroach.workers.dev/reports";
+
+async function fetchApprovedReports() {
+  try {
+    const response = await fetch(REPORTS_API);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not load reports.");
+    }
+
+    if (!Array.isArray(data.reports)) {
+      throw new Error("Invalid reports response.");
+    }
+
+    return { data: data.reports, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
+function openModal(id) {
+    const modal = document.getElementById(id);
+
+    if (!modal) {
+      console.warn(`Modal not found: ${id}`);
+      return;
+    }
+
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+  }
+
+  function closeModal(modal) {
+    if (!modal) {
+      return;
+    }
+
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+
+    if (!document.querySelector(".modal.show")) {
+      document.body.classList.remove("modal-open");
+    }
+  }
+
+  document.addEventListener("click", (event) => {
+    const element = event.target instanceof Element ? event.target : null;
+
+    if (!element) {
+      return;
+    }
+
+    const openButton = element.closest("[data-open]");
+
+    if (openButton) {
+      event.preventDefault();
+      openModal(openButton.dataset.open);
+      return;
+    }
+
+    const closeButton = element.closest("[data-close]");
+
+    if (closeButton) {
+      event.preventDefault();
+      closeModal(closeButton.closest(".modal"));
+      return;
+    }
+
+    if (element.classList.contains("modal")) {
+      closeModal(element);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      document.querySelectorAll(".modal.show").forEach((modal) => {
+        closeModal(modal);
+      });
+    }
+  });
+
+  const alphabetButtons = document.querySelectorAll(".alphabet-button[data-letter]");
+  const librarySummary = document.getElementById("library-summary");
+
+  function showLibraryLetter(letter) {
+    document.querySelectorAll("[data-letter-section]").forEach((section) => {
+      const shouldShow =
+        letter === "all" ||
+        section.dataset.letterSection === letter;
+
+      section.hidden = !shouldShow;
+    });
+
+    if (librarySummary) {
+      librarySummary.textContent = letter === "all"
+        ? "Showing all currently verified reports."
+        : `Showing verified reports beginning with the letter ${letter}.`;
+    }
+  }
+
+  function refreshAlphabetButtons() {
+    const lettersWithGames = new Set();
+
+    document.querySelectorAll("[data-letter-section]").forEach((section) => {
+      const letter = section.dataset.letterSection;
+
+      if (letter && section.querySelector(".game-card")) {
+        lettersWithGames.add(letter);
+      }
+    });
+
+    alphabetButtons.forEach((button) => {
+      const letter = button.dataset.letter;
+
+      if (letter === "all") {
+        button.disabled = false;
+        button.classList.remove("empty");
+        return;
+      }
+
+      const enabled = lettersWithGames.has(letter);
+
+      button.disabled = !enabled;
+      button.classList.toggle("empty", !enabled);
+    });
+  }
+
+  alphabetButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.disabled) {
+        return;
+      }
+
+      alphabetButtons.forEach((item) => {
+        item.classList.remove("active");
+      });
+
+      button.classList.add("active");
+      showLibraryLetter(button.dataset.letter);
+    });
+  });
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function getStatusBadgeClass(status) {
+    const badgeClasses = {
+      Excellent: "green",
+      Playable: "",
+      Limited: "orange",
+      Unsupported: "red"
+    };
+
+    return badgeClasses[status] || "gray";
+  }
+
+  function formatTestedDate(dateValue) {
+    if (!dateValue) {
+      return "Not provided";
+    }
+
+    const date = new Date(`${dateValue}T00:00:00`);
+
+    return Number.isNaN(date.getTime())
+      ? "Not provided"
+      : date.toLocaleDateString();
+  }
+
+  async function loadApprovedGameReports() {
+    const librarySectionsContainer = document.getElementById("library-sections");
+    const reportsContainer = document.getElementById("community-reports");
+
+    if (!librarySectionsContainer || !reportsContainer) {
+      return;
+    }
+
+    reportsContainer.innerHTML = `
+      <p class="library-loading">Loading approved community reports…</p>
+    `;
+
+    const { data: reports, error } = await fetchApprovedReports();
+
+    if (error) {
+      console.error("Could not load approved reports:", error);
+      reportsContainer.innerHTML = `
+        <p class="library-loading">
+          Approved community reports could not be loaded right now.
+        </p>
+      `;
+      return;
+    }
+
+    document.querySelectorAll("[data-community-letter-section]").forEach((section) => {
+      section.remove();
+    });
+
+    reportsContainer.innerHTML = "";
+
+    if (!reports || reports.length === 0) {
+      reportsContainer.innerHTML = `
+        <p class="library-loading">
+          No community reports have been approved yet.
+        </p>
+      `;
+      refreshAlphabetButtons();
+      return;
+    }
+
+    const reportsByLetter = {};
+
+    reports.forEach((report) => {
+      const gameName = String(report.game_name || "").trim();
+      const firstCharacter = gameName.charAt(0).toUpperCase();
+      const letter = /^[A-Z]$/.test(firstCharacter) ? firstCharacter : "#";
+
+      if (!reportsByLetter[letter]) {
+        reportsByLetter[letter] = [];
+      }
+
+      reportsByLetter[letter].push(report);
+    });
+
+    Object.keys(reportsByLetter)
+      .sort()
+      .forEach((letter) => {
+        const section = document.createElement("section");
+
+        section.className = "library-section";
+        section.dataset.letterSection = letter;
+        section.dataset.communityLetterSection = "true";
+
+        section.innerHTML = `
+          <h3 class="library-section-title">${escapeHtml(letter)}</h3>
+
+          <div class="game-grid">
+            ${reportsByLetter[letter].map((report) => `
+              <article class="game-card community-report-card">
+                <span class="badge ${getStatusBadgeClass(report.compatibility_status)}">
+                  <span class="dot"></span>${escapeHtml(report.compatibility_status)}
+                </span>
+
+                <h3>${escapeHtml(report.game_name)}</h3>
+                <p>Community-submitted compatibility result</p>
+
+                <div class="game-info">
+                  <div>
+                    <span>Available on</span>
+                    <strong>${escapeHtml(report.store)}</strong>
+                  </div>
+                  <div>
+                    <span>Device / distro</span>
+                    <strong>${escapeHtml(report.distro || "Not provided")}</strong>
+                  </div>
+                  <div>
+                    <span>Proton / Wine</span>
+                    <strong>${escapeHtml(report.proton || "Not provided")}</strong>
+                  </div>
+                  <div>
+                    <span>Date tested</span>
+                    <strong>${escapeHtml(formatTestedDate(report.tested_date))}</strong>
+                  </div>
+                  <div>
+                    <span>Current status</span>
+                    <strong class="${report.compatibility_status === "Unsupported" ? "working-no" : "working-yes"}">
+                      ${escapeHtml(report.compatibility_status)}
+                    </strong>
+                  </div>
+                </div>
+
+                ${
+                  report.launch_options
+                    ? `<p class="report-launch-options"><strong>Launch options:</strong> ${escapeHtml(report.launch_options)}</p>`
+                    : ""
+                }
+
+                ${
+                  report.notes
+                    ? `<p class="report-notes">${escapeHtml(report.notes)}</p>`
+                    : ""
+                }
+              </article>
+            `).join("")}
+          </div>
+        `;
+
+        librarySectionsContainer.appendChild(section);
+      });
+
+    refreshAlphabetButtons();
+    showLibraryLetter("all");
+  }
+
+  const testForm = document.getElementById("test-form");
+const successMessage = document.getElementById("success-message");
+const submitModal = document.getElementById("submit-modal");
+
+let verificationToken = "";
+let verificationWidget = null;
+let submissionInProgress = false;
+
+function showSubmissionMessage(message) {
+  successMessage.textContent = message;
+  successMessage.classList.add("show");
+}
+
+function renderReportVerification() {
+  if (
+    !window.turnstile ||
+    verificationWidget !== null ||
+    !submitModal.classList.contains("show")
+  ) {
+    return;
+  }
+
+  verificationWidget = window.turnstile.render(
+    "#report-verification",
+    {
+      sitekey: "0x4AAAAAAFO5DjY0YeoDb-SG",
+      action: "game_report",
+      theme: "auto",
+      callback: (token) => {
+        verificationToken = token;
+      },
+      "expired-callback": () => {
+        verificationToken = "";
+      },
+      "error-callback": () => {
+        verificationToken = "";
+        showSubmissionMessage(
+          "Verification could not load. Please retry or reload the page."
+        );
+      }
+    }
+  );
+}
+
+window.onReportTurnstileLoaded = renderReportVerification;
+
+new MutationObserver(renderReportVerification).observe(
+  submitModal,
+  { attributes: true, attributeFilter: ["class"] }
+);
+
+testForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  if (submissionInProgress) return;
+
+  successMessage.classList.remove("show");
+  successMessage.textContent = "";
+
+  if (!verificationToken) {
+    showSubmissionMessage(
+      "Please complete the verification before submitting."
+    );
+    return;
+  }
+
+  const submitButton = testForm.querySelector('button[type="submit"]');
+  const originalButtonText = submitButton.textContent;
+  const field = (id) => document.getElementById(id).value.trim();
+
+  const payload = {
+    game_name: field("game-name"),
+    store: field("store"),
+    distro: field("distro") || null,
+    proton: field("proton") || null,
+    compatibility_status: field("status"),
+    tested_date: field("tested-date") || null,
+    launch_options: field("launch-options") || null,
+    notes: field("notes") || null,
+    turnstile_token: verificationToken
+  };
+
+  submissionInProgress = true;
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting…";
+
+  try {
+    const response = await fetch(REPORTS_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || data.success !== true) {
+      throw new Error(data.error || "Your report was not accepted.");
+    }
+
+    testForm.reset();
+    showSubmissionMessage(
+      "Thanks! Your report was submitted for review. " +
+      "It will appear publicly after approval."
+    );
+  } catch (error) {
+    console.error("Report submission failed:", error);
+    showSubmissionMessage(
+      error instanceof TypeError
+        ? "Could not confirm submission. Check your connection before retrying."
+        : error.message
+    );
+  } finally {
+    submissionInProgress = false;
+    submitButton.disabled = false;
+    submitButton.textContent = originalButtonText;
+    verificationToken = "";
+
+    if (window.turnstile && verificationWidget !== null) {
+      window.turnstile.reset(verificationWidget);
+    }
+  }
+});
+
+
+  refreshAlphabetButtons();
+  showLibraryLetter("all");
+  loadApprovedGameReports();
+</script>
+<script
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onReportTurnstileLoaded&amp;render=explicit"
+  async defer
+></script>
+</body>
+</html>
